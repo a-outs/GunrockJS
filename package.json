@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "watch": {
+    "test": {
+      "extensions": "js"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node .",
+    "watch": "npm-watch test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.5.3"
+    "discord.js": "^13.0.0-dev.4714a961b87746b0f85214c756614d276666f285",
+    "eslint": "^7.29.0",
+    "npm-watch": "^0.10.0"
   }
 }
