@@ -2,10 +2,10 @@
 
 I hate discord python it makes me sad and there is so little documentation so im trying to implement Gunrock in JS.
 
-helpful docs:
+## Development Quickstart
 
-https://deploy-preview-638--discordjs-guide.netlify.app/interactions/registering-slash-commands.html#guild-commands
+(Run only once): `npm install`
 
-https://deploy-preview-638--discordjs-guide.netlify.app/interactions/replying-to-slash-commands.html#responding-to-a-command
+Watch: `npm run watch`
 
-https://deploy-preview-638--discordjs-guide.netlify.app/interactions/slash-command-permissions.html
+Run without watch: `node .`

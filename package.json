@@ -4,13 +4,11 @@
   "description": "",
   "main": "index.js",
   "watch": {
-    "test": {
-      "extensions": "js"
-    }
+    "main": "*.js"
   },
   "scripts": {
-    "test": "node .",
-    "watch": "npm-watch test"
+    "main": "node .",
+    "watch": "npm-watch main"
   },
   "author": "",
   "license": "ISC",
