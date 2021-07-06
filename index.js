@@ -1,98 +1,43 @@
 const { token } = require("./token.json");
 const fs = require("fs");
-const Discord = require("discord.js");
+const { Client, Collection } = require("discord.js");
+const { prefix } = require("./config.json");
 
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
+const client = new Client({
+  intents: ["GUILDS", "GUILD_MESSAGES"],
+});
 
 // The following allows commands to be read in from ./commands/ as exported modules. These cannot be hotloaded, the entire program must be re run as of now.
-client.commands = new Discord.Collection();
-const commandFiles = fs
-  .readdirSync("./commands")
-  .filter((file) => file.endsWith(".js"));
+client.commands = new Collection();
 
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
+const commandFolders = fs.readdirSync("./commands");
+
+for (const folder of commandFolders) {
+  const commandFiles = fs
+    .readdirSync(`./commands/${folder}`)
+    .filter((file) => file.endsWith(".js"));
+  for (const file of commandFiles) {
+    const command = require(`./commands/${folder}/${file}`);
+    client.commands.set(command.name, command);
+  }
 }
-
-// misc global variables
-const timmieID = "372696487290863618";
 
 client.once("ready", () => {
   console.log("GunrockJS is Ready!");
+  // Set the client user's activity
+  client.user.setActivity("your mom", { type: "WATCHING" });
 });
 
-client.on("message", async (message) => {
-  const prefix = "%test";
-
+// listener for regular messages
+client.on("messageCreate", async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "deploy" && message.author.id === timmieID) {
-    const data = [
-      {
-        name: "ping",
-        description: "Replies with Pong!",
-        options: [
-          {
-            name: "input",
-            description: "Enter a string",
-            type: "STRING",
-          },
-          {
-            name: "num",
-            description: "Enter an integer",
-            type: "INTEGER",
-          },
-          {
-            name: "choice",
-            description: "Select a boolean",
-            type: "BOOLEAN",
-          },
-          {
-            name: "target",
-            description: "Select a user",
-            type: "USER",
-          },
-          {
-            name: "destination",
-            description: "Select a channel",
-            type: "CHANNEL",
-          },
-          {
-            name: "muted",
-            description: "Select a role",
-            type: "ROLE",
-          },
-        ],
-      },
-      {
-        name: "beep",
-        description: "Replies with Boop!",
-      },
-      {
-        name: "joe",
-        description: "Replies with Mama!",
-      },
-    ];
-
-    if (args[0] === "global") {
-      // to update slash commands GLOBALLY run the following line
-      await client.application?.commands.set(data);
-    } else {
-      // updates slash commands in guild
-      await client.guilds.cache.get(message.guild.id).commands.set(data);
-    }
-
-    message.reply(
-      "Slash commands successfully deployed in GUILD " + message.guild.name
-    );
-    return;
-  }
-
-  if (!client.commands.has(command)) {
+  if (
+    !(client.commands.has(command) && client.commands.get(command).hasCommand)
+  ) {
     message.reply("Command not found!");
     return;
   }
@@ -105,25 +50,35 @@ client.on("message", async (message) => {
   }
 });
 
-client.on("interaction", async (interaction) => {
+// Listener for slash commands
+client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
-  if (interaction.commandName === "ping") {
-    const { value: string } = interaction.options.get("input");
-    const { value: integer } = interaction.options.get("num");
-    const { value: boolean } = interaction.options.get("choice");
-    const { user } = interaction.options.get("target");
-    const { member } = interaction.options.get("input");
-    const { channel } = interaction.options.get("destination");
-    const { role } = interaction.options.get("muted");
+  if (
+    client.commands.has(interaction.commandName) &&
+    client.commands.get(interaction.commandName).hasSlash
+  ) {
+    try {
+      client.commands.get(interaction.commandName).slash_execute(interaction);
+    } catch (error) {
+      console.error(error);
+      interaction.reply("There was an error trying to execute that command!");
+    }
+  }
+});
 
-    console.log([string, integer, boolean, user, member, channel, role]);
-    await interaction.reply("Pong!");
-  }
-  if (interaction.commandName === "beep") {
-    await interaction.reply({ content: "Boop!", ephemeral: true });
-  }
-  if (interaction.commandName === "joe") {
-    await interaction.channel.send("mama");
+// listener for button interactions
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isButton()) return;
+  if (
+    client.commands.has(interaction.customId) &&
+    client.commands.get(interaction.customId).hasButton
+  ) {
+    try {
+      client.commands.get(interaction.customId).button_execute(interaction);
+    } catch (error) {
+      console.error(error);
+      interaction.reply("There was an error trying to execute that command!");
+    }
   }
 });
 
