@@ -1,24 +1,42 @@
 const fs = require("fs").promises;
 const parse = require("csv-parse/lib/sync");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Message } = require("discord.js");
 
 module.exports = {
   name: "course",
-  description: "Responds with Pong!",
+  description: "Gives you information about any UC Davis course!",
   hasCommand: true,
   hasSlash: true,
   hasButton: false,
-  helpEntry: false,
+  helpEntry: true,
   async execute(message, args) {
-    const messageReply = await readCourses(args[0] + " " + args[1]);
+    const courseCode = parseCourseCode(args);
+    const messageReply = await readCourses(courseCode);
     await message.reply(messageReply);
   },
   async slash_execute(interaction) {
-    const { value: courseCode } = interaction.options.get('code');
+    const { value: rawCourseCode } = interaction.options.get("code");
+    const courseCode = parseCourseCode(rawCourseCode.split(" "));
     const messageReply = await readCourses(courseCode);
     await interaction.reply(messageReply);
   },
 };
+
+const parseCourseCode = (args) => {
+  try {
+    let courseCode = "";
+    if (args[1].replace(/[^0-9]/g, "").length < 3) {
+      const zerosNeeded = 3 - args[1].replace(/[^0-9]/g, "").length;
+      for (let i = 0; i < zerosNeeded; i++) courseCode += "0";
+    }
+    courseCode = args[0] + " " + courseCode + args[1];
+    return courseCode;
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
+
 
 const readCourses = async (courseCode) => {
   // slight parsing for the inputted `courseCode`
@@ -37,7 +55,19 @@ const readCourses = async (courseCode) => {
   const course = records.find((course) => course.Code === courseCode);
 
   // if course object isn't found
-  if (!course) return "Sorry, but I couldn't find that course! Are you sure you spelled that right?";
+  if (!course)
+    return {
+      embeds: [
+        new MessageEmbed()
+          .setTitle("Course not found!")
+          .setDescription(
+            "Sorry, but I couldn't find that course! Are you sure you spelled that right?"
+          )
+          .setColor("#ff0000")
+          .addField("Examples of valid input", "JOE 001A\njoe 1a\nJoE 01A"),
+      ],
+      ephemeral: true,
+    };
 
   // setting up embed to reply with
   const reply = new MessageEmbed()
