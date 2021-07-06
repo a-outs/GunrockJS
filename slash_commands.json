@@ -1,0 +1,28 @@
+{
+  "slash_commands": [
+    {
+      "name": "ping",
+      "description": "Replies with Pong!"
+    },
+    {
+      "name": "cheeto",
+      "description": "Gives a random picture of cheeto!"
+    },
+    {
+      "name": "help",
+      "description": "Sends help message"
+    },
+    {
+      "name": "course",
+      "description": "Gives information on a specific course!",
+      "options": [
+        {
+          "name": "code",
+          "type": "STRING",
+          "description": "Code for the course you want to know about. E.X. [ecs 036c]",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
