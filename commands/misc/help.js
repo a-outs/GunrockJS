@@ -71,7 +71,7 @@ const getHelpInfo = (args, client) => {
   if (command.usage)
     data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
 
-  data.push(`**Cooldown:** ${command.cooldown || 0} second(s)`);
+  data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
   return { content: data.join("\n"), split: true };
 };
