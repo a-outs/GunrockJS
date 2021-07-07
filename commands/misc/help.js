@@ -11,7 +11,12 @@ module.exports = {
     message.reply(getHelpInfo(args, message.client));
   },
   async slash_execute(interaction) {
-    interaction.reply(getHelpInfo([], interaction.client));
+    try {
+      const { value: command } = interaction.options.get("command");
+      interaction.reply(getHelpInfo([command], interaction.client));
+    } catch (e) {
+      interaction.reply(getHelpInfo([], interaction.client));
+    }
   },
 };
 
@@ -60,11 +65,21 @@ const getHelpInfo = (args, client) => {
     commands.get(name) ||
     commands.find((c) => c.aliases && c.aliases.includes(name));
 
+  const replyEmbed = new MessageEmbed();
+
   if (!command) {
-    return "that's not a valid command!";
+    return {
+      embeds: [
+        replyEmbed
+          .setTitle("Error!")
+          .setColor("#ff0000")
+          .setDescription("That's not a valid command!"),
+      ],
+      ephemeral: true,
+    };
   }
 
-  data.push(`**Name:** ${command.name}`);
+  replyEmbed.setTitle(`**Name:** ${command.name}`);
 
   if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(", ")}`);
   if (command.description) data.push(`**Description:** ${command.description}`);
@@ -73,5 +88,7 @@ const getHelpInfo = (args, client) => {
 
   data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
-  return { content: data.join("\n"), split: true };
+  replyEmbed.setDescription(data.join("\n"))
+
+  return { embeds: [replyEmbed], split: true, ephemeral: true };
 };

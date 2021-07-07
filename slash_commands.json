@@ -10,7 +10,15 @@
     },
     {
       "name": "help",
-      "description": "Sends help message"
+      "description": "Sends help message",
+      "options": [
+        {
+          "name": "command",
+          "type": "STRING",
+          "description": "Give a specific command to learn more about it!",
+          "required": false
+        }
+      ]
     },
     {
       "name": "course",
