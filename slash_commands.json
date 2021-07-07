@@ -31,6 +31,18 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "crn",
+      "description": "Gives information about a specific course's CRN",
+      "options": [
+        {
+          "name": "code",
+          "type": "STRING",
+          "description": "Code for the course you want to know about. E.X. [ecs 036c]",
+          "required": true
+        }
+      ]
     }
   ]
 }
