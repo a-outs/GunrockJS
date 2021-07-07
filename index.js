@@ -1,6 +1,6 @@
 const { token } = require("./token.json");
 const fs = require("fs");
-const { Client, Collection, Message, MessageEmbed } = require("discord.js");
+const { Client, Collection, MessageEmbed } = require("discord.js");
 const { prefix } = require("./config.json");
 
 const client = new Client({
@@ -39,9 +39,18 @@ client.on("messageCreate", async (message) => {
   const command = client.commands.get(args.shift().toLowerCase());
 
   if (!(command && command.hasCommand)) {
-    message.reply("Command not found!");
-    return;
+    return message.reply("Command not found!");
   }
+
+  const permissionArray = message.guild.members.cache
+    .find((member) => message.author.id == member.id)
+    .permissions.toArray();
+
+  if (
+    command.permissions &&
+    !command.permissions.every((perm) => permissionArray.includes(perm))
+  )
+    return message.reply("You don't have the permissions for that!");
 
   if (handleCooldown(command, message)) return;
 
@@ -60,12 +69,19 @@ client.on("interactionCreate", async (interaction) => {
   const command = client.commands.get(interaction.commandName);
   if (handleCooldown(command, interaction)) return;
 
-  if (command && command.hasSlash) {
+  if (
+    command &&
+    command.hasSlash &&
+    interaction.member.permissions.has(command.permissions)
+  ) {
     try {
       command.slash_execute(interaction);
     } catch (error) {
       console.error(error);
-      interaction.reply("There was an error trying to execute that command!");
+      interaction.reply({
+        content: "There was an error trying to execute that command!",
+        ephemeral: true,
+      });
     }
   }
 });
@@ -77,12 +93,19 @@ client.on("interactionCreate", async (interaction) => {
   const command = client.commands.get(interaction.customId);
   if (handleCooldown(command, interaction)) return;
 
-  if (command && command.hasButton) {
+  if (
+    command &&
+    command.hasButton &&
+    interaction.member.permissions.has(command.permissions)
+  ) {
     try {
       command.button_execute(interaction);
     } catch (error) {
       console.error(error);
-      interaction.reply("There was an error trying to execute that command!");
+      interaction.reply({
+        content: "There was an error trying to execute that command!",
+        ephemeral: true,
+      });
     }
   }
 });
@@ -109,26 +132,23 @@ const handleCooldown = (command, messageOrInteraction) => {
       const timeLeft = (expirationTime - now) / 1000;
       // sends error message if timeout has not expired.
       // commented out is logic to automatically delete the message. does not work for interaction replies
-      messageOrInteraction
-        .reply({
-          embeds: [
-            new MessageEmbed()
-              .setTitle("Command Failed!")
-              .setColor("#ff0000")
-              .setDescription(
-                `please wait ${timeLeft.toFixed(
-                  1
-                )} more second(s) before reusing the \`${
-                  command.name
-                }\` command.`
-              )
-              //.setFooter("This message will automatically delete in 5s"),
-          ],
-          ephemeral: true,
-        })
-        // .then((msg) => {
-        //   setTimeout(() => msg.delete(), 5000);
-        // });
+      messageOrInteraction.reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle("Command Failed!")
+            .setColor("#ff0000")
+            .setDescription(
+              `please wait ${timeLeft.toFixed(
+                1
+              )} more second(s) before reusing the \`${command.name}\` command.`
+            ),
+          //.setFooter("This message will automatically delete in 5s"),
+        ],
+        ephemeral: true,
+      });
+      // .then((msg) => {
+      //   setTimeout(() => msg.delete(), 5000);
+      // });
       return 1;
     }
   }
