@@ -1,5 +1,6 @@
 const { token } = require("./token.json");
 const fs = require("fs");
+const fsp = require("fs").promises;
 const { Client, Collection, MessageEmbed } = require("discord.js");
 const { prefix } = require("./config.json");
 
@@ -38,7 +39,13 @@ client.on("messageCreate", async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = client.commands.get(args.shift().toLowerCase());
 
-  if (!(command && command.hasCommand)) {
+  if (
+    !(
+      command &&
+      command.hasCommand &&
+      !(await checkIfEnabled(command, message))
+    )
+  ) {
     return message.reply("Command not found!");
   }
 
@@ -72,7 +79,8 @@ client.on("interactionCreate", async (interaction) => {
   if (
     command &&
     command.hasSlash &&
-    interaction.member.permissions.has(command.permissions)
+    interaction.member.permissions.has(command.permissions) &&
+    !(await checkIfEnabled(command, interaction))
   ) {
     try {
       command.slash_execute(interaction);
@@ -83,6 +91,18 @@ client.on("interactionCreate", async (interaction) => {
         ephemeral: true,
       });
     }
+  } else {
+    interaction.reply({
+      embeds: [
+        new MessageEmbed()
+          .setTitle("Error!")
+          .setDescription(
+            "This command is not available! It is likely that it has been disabled for this guild."
+          )
+          .setColor("#ff0000"),
+      ],
+      ephemeral: true,
+    });
   }
 });
 
@@ -109,6 +129,21 @@ client.on("interactionCreate", async (interaction) => {
     }
   }
 });
+
+const checkIfEnabled = async (command, messageOrInteraction) => {
+  const guilds = JSON.parse(
+    await fsp.readFile(__dirname + "/guildConfigs.json")
+  ).guilds;
+  const guild = guilds.find(
+    (guild) => guild.id == messageOrInteraction.guild.id
+  );
+  if (!guild) return 0;
+  const commandSetting = guild.commandSettings.find(
+    (commandSetting) => commandSetting.name == command.name
+  );
+  if (!commandSetting) return 0;
+  return !commandSetting.enabled;
+};
 
 const handleCooldown = (command, messageOrInteraction) => {
   const { cooldowns } = client;
