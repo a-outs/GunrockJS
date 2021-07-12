@@ -34,9 +34,26 @@ client.once("ready", () => {
 
 // listener for regular messages
 client.on("messageCreate", async (message) => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  if (message.author.bot) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  // loads settings
+  const settings = JSON.parse(
+    await fsp.readFile(__dirname + "/guildConfigs.json")
+  );
+  const guilds = settings.guilds;
+
+  // guild is the object of settings for the guild that the settings command was sent from
+  let guild = guilds.find((guild) => guild.id == message.guild.id);
+
+  let tempPrefix = prefix; // probably should rename tempPrefix/prefix
+
+  if (guild && guild.prefix) {
+    tempPrefix = guild.prefix;
+  }
+
+  if (!message.content.startsWith(tempPrefix)) return;
+
+  const args = message.content.slice(tempPrefix.length).trim().split(/ +/);
   const command = client.commands.get(args.shift().toLowerCase());
 
   if (

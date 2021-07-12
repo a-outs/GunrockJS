@@ -30,6 +30,7 @@ module.exports = {
     );
     const guilds = settings.guilds;
 
+    // guild is the object of settings for the guild that the settings command was sent from
     let guild = guilds.find((guild) => guild.id == message.guild.id);
 
     if (!guild) {
@@ -57,18 +58,33 @@ module.exports = {
     }
 
     if (args[0] === "set") {
-      if (args.length < 4) {
+      if (args.length < 3) {
         return await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle("Error: Invalid Usage")
               .setColor("#ff0000")
               .setDescription(
-                "Usage: settings set [command] [setting] [value]"
+                "Usage: `settings set [command] [setting] [value]` or `settings set prefix [new prefix]`"
               ),
           ],
         });
       }
+
+      if (args[1] === "prefix") {
+        guild.prefix = args[2];
+        writeSettings(settings);
+        return await message.reply({
+          embeds: [
+            new MessageEmbed()
+              .setTitle("Success")
+              .setDescription(
+                "Prefix set to `" + args[2] + "`!"
+              ),
+          ],
+        });
+      }
+
       if (!message.client.commands.has(args[1])) {
         return await message.reply({
           embeds: [
@@ -79,6 +95,7 @@ module.exports = {
           ],
         });
       }
+
       if (!validSettings.includes(args[2])) {
         return await message.reply({
           embeds: [
@@ -102,7 +119,19 @@ module.exports = {
           guild.commandSettings[guild.commandSettings.length - 1];
       }
       let value = args[3];
-      if (args[2] === "enabled") value = value === "true";
+      if (args[2] === "enabled") {
+        if (args[1] === "settings" || args[1] === "help") { // prevent users from disabling the help and settings commands
+          return await message.reply({
+            embeds: [
+              new MessageEmbed()
+                .setTitle("Error: Command not editable!")
+                .setColor("#ff0000")
+                .setDescription("That command's settings cannot be edited!"),
+            ],
+          });
+        }
+        value = value === "true";
+      }
       commandSetting[args[2]] = value;
       message.reply({
         embeds: [
@@ -121,9 +150,13 @@ module.exports = {
       });
     }
 
-    await fs.writeFile(
-      __dirname + "/../../guildConfigs.json",
-      JSON.stringify(settings, null, 2)
-    );
+    writeSettings(settings);
   },
 };
+
+const writeSettings = async (settings) => {
+  await fs.writeFile(
+    __dirname + "/../../guildConfigs.json",
+    JSON.stringify(settings, null, 2)
+  );
+}
