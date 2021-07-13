@@ -43,6 +43,18 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "boomer",
+      "description": "Calls someone a boomer",
+      "options": [
+        {
+          "name": "name",
+          "type": "MENTIONABLE",
+          "description": "Name of the person you want to call boomer",
+          "required": true
+        }
+      ]
     }
   ]
 }
