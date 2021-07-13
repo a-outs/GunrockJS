@@ -21,6 +21,10 @@
       ]
     },
     {
+      "name": "gunrock",
+      "description": "Sends help message"
+    },
+    {
       "name": "course",
       "description": "Gives information on a specific course!",
       "options": [

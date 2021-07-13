@@ -54,7 +54,12 @@ client.on("messageCreate", async (message) => {
   if (!message.content.startsWith(tempPrefix)) return;
 
   const args = message.content.slice(tempPrefix.length).trim().split(/ +/);
-  const command = client.commands.get(args.shift().toLowerCase());
+  const commandName = args.shift().toLowerCase();
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+    );
 
   if (
     !(
@@ -90,7 +95,11 @@ client.on("messageCreate", async (message) => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const command = client.commands.get(interaction.commandName);
+  const command =
+    client.commands.get(interaction.commandName) ||
+    client.commands.find(
+      (cmd) => cmd.aliases && cmd.aliases.includes(interaction.commandName)
+    );
   if (handleCooldown(command, interaction)) return;
 
   if (

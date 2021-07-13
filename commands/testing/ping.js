@@ -1,6 +1,8 @@
 module.exports = {
   name: "ping",
   description: "Responds with Pong!",
+  aliases: ["test"],
+  cooldown: 1,
   hasCommand: true,
   hasSlash: true,
   hasButton: false,

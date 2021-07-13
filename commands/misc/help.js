@@ -3,6 +3,7 @@ const { MessageButton, MessageEmbed } = require("discord.js");
 module.exports = {
   name: "help",
   description: "Help command!",
+  aliases: ["gunrock"],
   hasCommand: true,
   hasSlash: true,
   hasButton: false,
@@ -88,7 +89,7 @@ const getHelpInfo = (args, client) => {
 
   data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
-  replyEmbed.setDescription(data.join("\n"))
+  replyEmbed.setDescription(data.join("\n"));
 
   return { embeds: [replyEmbed], split: true, ephemeral: true };
 };
