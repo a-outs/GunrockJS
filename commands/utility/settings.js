@@ -42,6 +42,7 @@ module.exports = {
       let response = new MessageEmbed().setTitle(
         'List of settings for guild "' + message.guild.name + '"'
       );
+      response.addField("Prefix:", `\`${guild.prefix ? guild.prefix : "%test"}\``);
       message.client.commands.forEach((command) => {
         let commandString = "";
         const commandSetting = guild.commandSettings.find(
@@ -54,7 +55,8 @@ module.exports = {
         }
         response.addField(command.name + ":", commandString);
       });
-      return await message.reply({ embeds: [response] });
+      console.log("joe");
+      return message.reply({ embeds: [response] });
     }
 
     if (args[0] === "set") {

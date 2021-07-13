@@ -12,11 +12,13 @@ Use the commands `/course` and `/crn` to get data on any UC Davis course!
 
 Each command can be enabled/disabled server wide!
 
-Note: This only works with regular commands (i.e. you won't be able to do this via slash commands).
+Note: The `settings` command does not work via slash commands yet.
 
-To see all commands and their settings, run `[prefix] settings list`
+To see all commands and their settings, do `[prefix] settings list`
 
-To enable/disabled commands, run `[prefix] settings set [command name] enabled [true/false]`
+To enable/disabled commands, do `[prefix] settings set [command name] enabled [true/false]`
+
+To change the prefix, do `[prefix] settings set prefix [new prefix]`
 
 ## Development Quickstart
 
