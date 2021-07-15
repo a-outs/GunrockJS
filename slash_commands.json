@@ -59,6 +59,18 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "cow",
+      "description": "Detects cow percentage in a @user",
+      "options": [
+        {
+          "name": "name",
+          "type": "MENTIONABLE",
+          "description": "Name of the person you want to rate",
+          "required": true
+        }
+      ]
     }
   ]
 }
