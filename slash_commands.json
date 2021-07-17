@@ -61,6 +61,18 @@
       ]
     },
     {
+      "name": "bad",
+      "description": "Calls someone bad",
+      "options": [
+        {
+          "name": "name",
+          "type": "MENTIONABLE",
+          "description": "Name of the person you want to call bad",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "cow",
       "description": "Detects cow percentage in a @user",
       "options": [
