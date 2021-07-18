@@ -1,8 +1,8 @@
 # GunrockJS
 
-[INVITE LINK](TO DO: Put invite link here)
+[INVITE LINK](https://discord.com/oauth2/authorize?client_id=726048467063013376&permissions=7784619969&scope=bot%20applications.commands)
 
-I hate discord python it makes me sad and there is so little documentation so im trying to implement Gunrock in JS.
+The best bot around for UC Davis Discord Servers!
 
 ## General Features
 

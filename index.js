@@ -3,6 +3,7 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const { Client, Collection, MessageEmbed } = require("discord.js");
 const { prefix } = require("./config.json");
+const package = require("./package.json");
 
 const client = new Client({
   intents: ["GUILDS", "GUILD_MESSAGES"],
@@ -19,6 +20,8 @@ for (const folder of commandFolders) {
     .filter((file) => file.endsWith(".js"));
   for (const file of commandFiles) {
     const command = require(`./commands/${folder}/${file}`);
+    // Sets a command's category to the folder its in, not used anywhere (yet)
+    command.category = folder;
     client.commands.set(command.name, command);
   }
 }
@@ -27,9 +30,9 @@ for (const folder of commandFolders) {
 client.cooldowns = new Collection();
 
 client.once("ready", () => {
-  console.log("GunrockJS is Ready!");
-  // Set the client user's activity
-  client.user.setActivity("your mom", { type: "WATCHING" });
+  console.log(`GunrockJS is Ready! - ${package.version}`);
+  // Set the bot's activity
+  client.user.setActivity("/gunrock", { type: "PLAYING" });
 });
 
 // listener for regular messages
@@ -68,8 +71,10 @@ client.on("messageCreate", async (message) => {
       !(await checkIfEnabled(command, message))
     )
   ) {
-    return message.reply("Command not found!");
-  }
+    return message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("Command not found!").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
+        setTimeout(() => msg.delete(), 5000);
+      });
+    }
 
   const permissionArray = message.guild.members.cache
     .find((member) => message.author.id == member.id)
@@ -79,7 +84,9 @@ client.on("messageCreate", async (message) => {
     command.permissions &&
     !command.permissions.every((perm) => permissionArray.includes(perm))
   )
-    return message.reply("You don't have the permissions for that!");
+    return message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("You don't have the permissions for that!").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
+      setTimeout(() => msg.delete(), 5000);
+    });
 
   if (handleCooldown(command, message)) return;
 
@@ -87,7 +94,9 @@ client.on("messageCreate", async (message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply("There was an error trying to execute that command!");
+    message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("It looks like there was an error running this command! Sorry about that.").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
+      setTimeout(() => msg.delete(), 5000);
+    });
   }
 });
 
@@ -156,6 +165,9 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
+/**
+* Checks if command is enabled in guild settings.
+*/
 const checkIfEnabled = async (command, messageOrInteraction) => {
   const guilds = JSON.parse(
     await fsp.readFile(__dirname + "/guildConfigs.json")
@@ -171,6 +183,12 @@ const checkIfEnabled = async (command, messageOrInteraction) => {
   return !commandSetting.enabled;
 };
 
+/**
+ * Checks if cooldown has elapsed or not.
+ * @param {*} command name of the command
+ * @param {*} messageOrInteraction the message or interaction that is the cause of the command
+ * @returns 0 if the cooldown done, 1 if it is not done and sends an error message.
+ */
 const handleCooldown = (command, messageOrInteraction) => {
   const { cooldowns } = client;
 
@@ -207,6 +225,7 @@ const handleCooldown = (command, messageOrInteraction) => {
         ],
         ephemeral: true,
       });
+      // TO DO: should probably make it self delete if it is not an interaction response
       // .then((msg) => {
       //   setTimeout(() => msg.delete(), 5000);
       // });

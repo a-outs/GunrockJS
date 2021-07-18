@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - 2021-07-XX
+## [1.0.0] - 2021-07-18
 
 Public release, major features implemented.
 
