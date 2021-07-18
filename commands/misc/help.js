@@ -45,7 +45,7 @@ const getHelpInfo = async (args, client, guildId) => {
         .join("\n")
     );
     data.push(
-      `\nYou can send \`${prefix.trimEnd()} help [command name]\` to get info on a specific command!`
+      `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
     );
 
     const githubLink = new MessageButton()

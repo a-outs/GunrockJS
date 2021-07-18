@@ -22,7 +22,9 @@ To see all commands and their settings, do `[prefix] settings list`
 
 To enable/disabled commands, do `[prefix] settings set [command name] enabled [true/false]`
 
-To change the prefix, do `[prefix] settings set prefix [new prefix]`
+To change the prefix, do `[old prefix] settings set prefix [new prefix]`
+
+A prefix can have up to one space in it. To set the prefix to something like `!test `, you can run `[old prefix] settings set prefix "!test "`
 
 ## Development Quickstart
 

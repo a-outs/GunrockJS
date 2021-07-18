@@ -55,7 +55,6 @@ module.exports = {
         }
         response.addField(command.name + ":", commandString);
       });
-      console.log("joe");
       return message.reply({ embeds: [response] });
     }
 
@@ -74,14 +73,16 @@ module.exports = {
       }
 
       if (args[1] === "prefix") {
-        guild.prefix = args[2];
+        let input = args[2];
+        if(args[3]) input += " " + args[3]
+        guild.prefix = input.replace(/^\"+|\"+$/g, "");
         writeSettings(settings);
         return await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle("Success")
               .setDescription(
-                "Prefix set to `" + args[2] + "`!"
+                "Prefix set to `" + guild.prefix + "`!"
               ),
           ],
         });
