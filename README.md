@@ -1,5 +1,7 @@
 # GunrockJS
 
+[INVITE LINK](TO DO: Put invite link here)
+
 I hate discord python it makes me sad and there is so little documentation so im trying to implement Gunrock in JS.
 
 ## General Features
@@ -7,6 +9,8 @@ I hate discord python it makes me sad and there is so little documentation so im
 To get started, try running `/gunrock` in any discord server with the bot!
 
 Use the commands `/course` and `/crn` to get data on any UC Davis course!
+
+Try out some of the fun ping commands like `/bad` or `/boomer`!
 
 ## Moderation Features
 
