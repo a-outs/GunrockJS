@@ -1,4 +1,5 @@
 const { MessageButton, MessageEmbed } = require("discord.js");
+const fs = require("fs").promises;
 
 module.exports = {
   name: "help",
@@ -9,19 +10,27 @@ module.exports = {
   hasButton: false,
   helpEntry: true,
   async execute(message, args) {
-    message.reply(getHelpInfo(args, message.client));
+    message.reply(await getHelpInfo(args, message.client, message.guild.id));
   },
   async slash_execute(interaction) {
     try {
       const { value: command } = interaction.options.get("command");
-      interaction.reply(getHelpInfo([command], interaction.client));
+      interaction.reply(await getHelpInfo([command], interaction.client, interaction.guildId));
     } catch (e) {
-      interaction.reply(getHelpInfo([], interaction.client));
+      interaction.reply(await getHelpInfo([], interaction.client, interaction.guildId));
     }
   },
 };
 
-const getHelpInfo = (args, client) => {
+const getHelpInfo = async (args, client, guildId) => {
+  const settings = JSON.parse(
+    await fs.readFile(__dirname + "/../../guildConfigs.json")
+  );
+  const guilds = settings.guilds;
+
+  // guild is the object of settings for the guild that the settings command was sent from
+  let guild = guilds.find((guild) => guild.id == guildId);
+
   const data = [];
   const { commands } = client;
   const { prefix } = require("../../config.json");
@@ -31,12 +40,12 @@ const getHelpInfo = (args, client) => {
     data.push("Here's a list of all my commands:");
     data.push(
       commands
-        .filter((command) => command.helpEntry)
+        .filter((command) => command.helpEntry && (!guild || !guild.commandSettings || !guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name) || guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name).enabled))
         .map((command) => "`" + command.name + "` " + command.description + " ")
         .join("\n")
     );
     data.push(
-      `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
+      `\nYou can send \`${prefix.trimEnd()} help [command name]\` to get info on a specific command!`
     );
 
     const githubLink = new MessageButton()
