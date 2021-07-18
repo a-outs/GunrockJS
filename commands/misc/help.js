@@ -77,7 +77,7 @@ const getHelpInfo = async (args, client, guildId) => {
 
   const replyEmbed = new MessageEmbed();
 
-  if (!command) {
+  if (!command || (guild && guild.commandSettings && guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name) && !guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name).enabled)) {
     return {
       embeds: [
         replyEmbed
