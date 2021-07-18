@@ -53,6 +53,11 @@ const getHelpInfo = async (args, client, guildId) => {
       .setURL("https://github.com/a-outs/GunrockJS")
       .setStyle("LINK");
 
+    const inviteLink = new MessageButton()
+      .setLabel("Invite Link")
+      .setURL("https://discord.com/oauth2/authorize?client_id=726048467063013376&permissions=7784619969&scope=bot%20applications.commands")
+      .setStyle("LINK");
+
     const helpEmbed = new MessageEmbed()
       .setColor("#0099ff")
       .setTitle("GunrockJS Help")
@@ -64,7 +69,7 @@ const getHelpInfo = async (args, client, guildId) => {
     return {
       embeds: [helpEmbed],
       split: true,
-      components: [[githubLink]],
+      components: [[inviteLink, githubLink]],
       ephemeral: true,
     };
   }
