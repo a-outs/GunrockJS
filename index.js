@@ -114,7 +114,7 @@ client.on("interactionCreate", async (interaction) => {
   if (
     command &&
     command.hasSlash &&
-    interaction.member.permissions.has(command.permissions) &&
+    (!command.permissions || interaction.member.permissions.has(command.permissions)) &&
     !(await checkIfEnabled(command, interaction))
   ) {
     try {
