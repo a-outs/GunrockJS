@@ -8,7 +8,8 @@
   },
   "scripts": {
     "main": "node .",
-    "watch": "npm-watch main"
+    "watch": "npm-watch main",
+    "fmt": "npx prettier --write ."
   },
   "author": "",
   "license": "ISC",

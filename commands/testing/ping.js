@@ -7,7 +7,7 @@ module.exports = {
   hasSlash: true,
   hasButton: false,
   helpEntry: false,
-  execute(message, args) {
+  execute(message) {
     message.channel.send("Pong!");
   },
   async slash_execute(interaction) {

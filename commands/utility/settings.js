@@ -23,7 +23,7 @@ module.exports = {
       });
     }
 
-    validSettings = ["enabled"];
+    const validSettings = ["enabled"];
 
     const settings = JSON.parse(
       await fs.readFile(__dirname + "/../../guildConfigs.json")
@@ -75,7 +75,7 @@ module.exports = {
       if (args[1] === "prefix") {
         let input = args[2];
         if(args[3]) input += " " + args[3]
-        guild.prefix = input.replace(/^\"+|\"+$/g, "");
+        guild.prefix = input.replace(/^"+|"+$/g, "");
         writeSettings(settings);
         return await message.reply({
           embeds: [

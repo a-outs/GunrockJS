@@ -3,7 +3,7 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const { Client, Collection, MessageEmbed } = require("discord.js");
 const { prefix } = require("./config.json");
-const package = require("./package.json");
+const nodePackage = require("./package.json");
 
 const client = new Client({
   intents: ["GUILDS", "GUILD_MESSAGES"],
@@ -30,7 +30,7 @@ for (const folder of commandFolders) {
 client.cooldowns = new Collection();
 
 client.once("ready", () => {
-  console.log(`GunrockJS is Ready! - ${package.version}`);
+  console.log(`GunrockJS is Ready! - ${nodePackage.version}`);
   // Set the bot's activity
   client.user.setActivity("/gunrock", { type: "PLAYING" });
 });

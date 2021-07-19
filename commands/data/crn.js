@@ -1,6 +1,6 @@
 const fs = require("fs").promises;
 const parse = require("csv-parse/lib/sync");
-const { MessageEmbed, Message } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
   name: "crn",

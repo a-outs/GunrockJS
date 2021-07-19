@@ -119,3 +119,6 @@ dist
 
 # bot token
 token.json
+
+# guild configs
+guildConfigs.json
