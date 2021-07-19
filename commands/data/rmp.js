@@ -25,10 +25,10 @@ const GetRMPData = async (teacherName) => {
   const records = parse(fileContent, {
     columns: true,
     escape: "\\",
-    skipLinesWithError: true,
+    // skipLinesWithError: true,
   });
   const teachers = records.filter((teacher) =>
-    teacher.Name.toLowerCase().includes(teacherName.toLowerCase())
+    teacher.name.toLowerCase().includes(teacherName.toLowerCase())
   );
   if (!teachers[0]) {
     return {
@@ -40,6 +40,7 @@ const GetRMPData = async (teacherName) => {
             "There were no results for your search, please check your spelling!"
           ),
       ],
+      ephemeral: true,
     };
   }
   if (teachers.length > 1) {
@@ -50,23 +51,31 @@ const GetRMPData = async (teacherName) => {
           .setColor("0xff0000")
           .setDescription(
             `There were too many results for your search, which ${teacherName} did you mean?\n` +
-              teachers.map((teacher) => `\`${teacher.Name}\``).join(", ")
+              teachers.map((teacher) => `\`${teacher.name}\``).join(", ")
           ),
       ],
+      ephemeral: true,
     };
   }
   const rmpLink = new MessageButton()
     .setLabel("Teacher's RMP")
-    .setURL(teachers[0]["Link to Page"])
+    .setURL(teachers[0].link)
     .setStyle("LINK");
+  const color = `0x${(
+    "0" + Math.floor((5 - parseFloat(teachers[0].rating) - 1) * 63).toString(16)
+  ).slice(-2)}${(
+    "0" + Math.floor((parseFloat(teachers[0].rating) - 1) * 63).toString(16)
+  ).slice(-2)}00`;
   return {
     embeds: [
       new MessageEmbed()
-        .setTitle(teachers[0].Name)
+        .setTitle(teachers[0].name)
         .setDescription(
-          `Rating: ${teachers[0].Rating}\nNumber of ratings: ${teachers[0]["# of Ratings"]}\nDifficulty: ${teachers[0].Difficulty}`
-        ),
+          `Rating: ${teachers[0].rating}\nNumber of ratings: ${teachers[0].numOfRatings}\nDifficulty: ${teachers[0].difficulty}`
+        )
+        .setColor(color),
     ],
     components: [[rmpLink]],
+    ephemeral: true,
   };
 };

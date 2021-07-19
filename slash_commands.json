@@ -83,6 +83,18 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "rmp",
+      "description": "Returns information on a teacher's rate my professor page.",
+      "options": [
+        {
+          "name": "name",
+          "type": "STRING",
+          "description": "Name of the professor you want to know about. E.X. [gary may]",
+          "required": true
+        }
+      ]
     }
   ]
 }
