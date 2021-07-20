@@ -15,9 +15,13 @@ module.exports = {
   async slash_execute(interaction) {
     try {
       const { value: command } = interaction.options.get("command");
-      interaction.reply(await getHelpInfo([command], interaction.client, interaction.guildId));
+      interaction.reply(
+        await getHelpInfo([command], interaction.client, interaction.guildId)
+      );
     } catch (e) {
-      interaction.reply(await getHelpInfo([], interaction.client, interaction.guildId));
+      interaction.reply(
+        await getHelpInfo([], interaction.client, interaction.guildId)
+      );
     }
   },
 };
@@ -40,7 +44,20 @@ const getHelpInfo = async (args, client, guildId) => {
     data.push("Here's a list of all my commands:");
     data.push(
       commands
-        .filter((command) => command.helpEntry && (!guild || !guild.commandSettings || !guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name) || guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name).enabled))
+        .filter(
+          (command) =>
+            command.helpEntry &&
+            (!guild ||
+              !guild.commandSettings ||
+              !guild.commandSettings.find(
+                (guildSettingCommand) =>
+                  guildSettingCommand.name == command.name
+              ) ||
+              guild.commandSettings.find(
+                (guildSettingCommand) =>
+                  guildSettingCommand.name == command.name
+              ).enabled)
+        )
         .map((command) => "`" + command.name + "` " + command.description + " ")
         .join("\n")
     );
@@ -55,7 +72,9 @@ const getHelpInfo = async (args, client, guildId) => {
 
     const inviteLink = new MessageButton()
       .setLabel("Invite Link")
-      .setURL("https://discord.com/oauth2/authorize?client_id=726048467063013376&permissions=7784619969&scope=bot%20applications.commands")
+      .setURL(
+        "https://discord.com/oauth2/authorize?client_id=726048467063013376&permissions=7784619969&scope=bot%20applications.commands"
+      )
       .setStyle("LINK");
 
     const helpEmbed = new MessageEmbed()
@@ -82,7 +101,17 @@ const getHelpInfo = async (args, client, guildId) => {
 
   const replyEmbed = new MessageEmbed();
 
-  if (!command || (guild && guild.commandSettings && guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name) && !guild.commandSettings.find((guildSettingCommand) => guildSettingCommand.name == command.name).enabled)) {
+  if (
+    !command ||
+    (guild &&
+      guild.commandSettings &&
+      guild.commandSettings.find(
+        (guildSettingCommand) => guildSettingCommand.name == command.name
+      ) &&
+      !guild.commandSettings.find(
+        (guildSettingCommand) => guildSettingCommand.name == command.name
+      ).enabled)
+  ) {
     return {
       embeds: [
         replyEmbed

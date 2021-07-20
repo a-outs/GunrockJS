@@ -42,7 +42,10 @@ module.exports = {
       let response = new MessageEmbed().setTitle(
         'List of settings for guild "' + message.guild.name + '"'
       );
-      response.addField("Prefix:", `\`${guild.prefix ? guild.prefix : "%test"}\``);
+      response.addField(
+        "Prefix:",
+        `\`${guild.prefix ? guild.prefix : "%test"}\``
+      );
       message.client.commands.forEach((command) => {
         let commandString = "";
         const commandSetting = guild.commandSettings.find(
@@ -74,16 +77,14 @@ module.exports = {
 
       if (args[1] === "prefix") {
         let input = args[2];
-        if(args[3]) input += " " + args[3]
+        if (args[3]) input += " " + args[3];
         guild.prefix = input.replace(/^"+|"+$/g, "");
         writeSettings(settings);
         return await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle("Success")
-              .setDescription(
-                "Prefix set to `" + guild.prefix + "`!"
-              ),
+              .setDescription("Prefix set to `" + guild.prefix + "`!"),
           ],
         });
       }
@@ -123,7 +124,8 @@ module.exports = {
       }
       let value = args[3];
       if (args[2] === "enabled") {
-        if (args[1] === "settings" || args[1] === "help") { // prevent users from disabling the help and settings commands
+        if (args[1] === "settings" || args[1] === "help") {
+          // prevent users from disabling the help and settings commands
           return await message.reply({
             embeds: [
               new MessageEmbed()
@@ -162,4 +164,4 @@ const writeSettings = async (settings) => {
     __dirname + "/../../guildConfigs.json",
     JSON.stringify(settings, null, 2)
   );
-}
+};

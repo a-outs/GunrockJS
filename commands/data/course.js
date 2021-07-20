@@ -37,7 +37,6 @@ const parseCourseCode = (args) => {
   }
 };
 
-
 const readCourses = async (courseCode) => {
   // slight parsing for the inputted `courseCode`
   courseCode = courseCode.toUpperCase();

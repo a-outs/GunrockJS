@@ -16,8 +16,7 @@ module.exports = {
         message.reply(
           "Slash commands deployed GLOBALLY, may take up to an hour to register!"
         );
-      } 
-      else if (args[0] === "reset") {
+      } else if (args[0] === "reset") {
         // resets slash commands in guild
         await message.client.guilds.cache
           .get(message.guild.id)

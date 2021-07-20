@@ -83,8 +83,7 @@ const readCRNs = async (courseCode) => {
   let fieldDesc = "";
 
   courses.forEach((course) => {
-    if(prevCRN !== course.CRN)
-    {
+    if (prevCRN !== course.CRN) {
       fieldDesc += "Instructor: " + course.Instructor;
       reply.addField(prevCRN, fieldDesc, true);
       prevCRN = course.CRN;
@@ -105,8 +104,8 @@ const readCRNs = async (courseCode) => {
         "\n";
     });
   });
-  fieldDesc += "Instructor: " + courses[courses.length-1].Instructor;
-  reply.addField(courses[courses.length-1].CRN, fieldDesc, true);
+  fieldDesc += "Instructor: " + courses[courses.length - 1].Instructor;
+  reply.addField(courses[courses.length - 1].CRN, fieldDesc, true);
 
   return { embeds: [reply] };
 };

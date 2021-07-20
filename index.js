@@ -71,10 +71,20 @@ client.on("messageCreate", async (message) => {
       !(await checkIfEnabled(command, message))
     )
   ) {
-    return message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("Command not found!").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
+    return message
+      .reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle("Error!")
+            .setColor("0xff0000")
+            .setDescription("Command not found!")
+            .setFooter("This message will self-desctruct in 5 seconds!"),
+        ],
+      })
+      .then((msg) => {
         setTimeout(() => msg.delete(), 5000);
       });
-    }
+  }
 
   const permissionArray = message.guild.members.cache
     .find((member) => message.author.id == member.id)
@@ -84,9 +94,19 @@ client.on("messageCreate", async (message) => {
     command.permissions &&
     !command.permissions.every((perm) => permissionArray.includes(perm))
   )
-    return message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("You don't have the permissions for that!").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
-      setTimeout(() => msg.delete(), 5000);
-    });
+    return message
+      .reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle("Error!")
+            .setColor("0xff0000")
+            .setDescription("You don't have the permissions for that!")
+            .setFooter("This message will self-desctruct in 5 seconds!"),
+        ],
+      })
+      .then((msg) => {
+        setTimeout(() => msg.delete(), 5000);
+      });
 
   if (handleCooldown(command, message)) return;
 
@@ -94,9 +114,21 @@ client.on("messageCreate", async (message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply({ embeds: [new MessageEmbed().setTitle("Error!").setColor("0xff0000").setDescription("It looks like there was an error running this command! Sorry about that.").setFooter("This message will self-desctruct in 5 seconds!")]}).then((msg) => {
-      setTimeout(() => msg.delete(), 5000);
-    });
+    message
+      .reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle("Error!")
+            .setColor("0xff0000")
+            .setDescription(
+              "It looks like there was an error running this command! Sorry about that."
+            )
+            .setFooter("This message will self-desctruct in 5 seconds!"),
+        ],
+      })
+      .then((msg) => {
+        setTimeout(() => msg.delete(), 5000);
+      });
   }
 });
 
@@ -114,7 +146,8 @@ client.on("interactionCreate", async (interaction) => {
   if (
     command &&
     command.hasSlash &&
-    (!command.permissions || interaction.member.permissions.has(command.permissions)) &&
+    (!command.permissions ||
+      interaction.member.permissions.has(command.permissions)) &&
     !(await checkIfEnabled(command, interaction))
   ) {
     try {
@@ -166,8 +199,8 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 /**
-* Checks if command is enabled in guild settings.
-*/
+ * Checks if command is enabled in guild settings.
+ */
 const checkIfEnabled = async (command, messageOrInteraction) => {
   const guilds = JSON.parse(
     await fsp.readFile(__dirname + "/guildConfigs.json")
