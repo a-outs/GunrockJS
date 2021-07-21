@@ -10,6 +10,8 @@ To get started, try running `/gunrock` in any discord server with the bot!
 
 Use the commands `/course` and `/crn` to get data on any UC Davis course!
 
+Use the command `/rmp` to get Rate My Professor information on any UC Davis professor!
+
 Try out some of the fun ping commands like `/bad` or `/boomer`!
 
 ## Moderation Features

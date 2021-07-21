@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0] - 2021-07-21
+
+The RMP update
+
+### Added
+
+- The RMP command - returns Rate My Professor information on a given professor.
+
+### Changed
+
+- CRN command now gives rmp rating for each instructor when possible.
+
 ## [1.0.0] - 2021-07-18
 
 Public release, major features implemented.

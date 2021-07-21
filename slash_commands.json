@@ -86,7 +86,7 @@
     },
     {
       "name": "rmp",
-      "description": "Returns information on a teacher's rate my professor page.",
+      "description": "Returns information on a teacher's Rate My Professor page.",
       "options": [
         {
           "name": "name",

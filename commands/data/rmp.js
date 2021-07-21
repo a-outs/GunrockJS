@@ -4,7 +4,7 @@ const { MessageEmbed, MessageButton } = require("discord.js");
 
 module.exports = {
   name: "rmp",
-  description: "Returns rate my professor information!",
+  description: "Returns Rate My Professor information!",
   aliases: [],
   hasCommand: true,
   hasSlash: true,
