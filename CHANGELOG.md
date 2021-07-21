@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Backend handling of CRN command to improve performance
+
 ## [1.1.0] - 2021-07-21
 
 The RMP update

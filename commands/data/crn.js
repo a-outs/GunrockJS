@@ -82,12 +82,18 @@ const readCRNs = async (courseCode) => {
   let prevCRN = courses[0].CRN;
   let fieldDesc = "";
 
-  // TODO: instead of calling GetRMPData for each course, we should get instructors first, get their data, then refer to that in the for loop
+  let teachers = {};
+  for (const course of courses) {
+    const instructor = course.Instructor;
+    if (!teachers[instructor])
+      teachers[instructor] = { rating: await GetRMPData(instructor) };
+  }
+
   for (const course of courses) {
     if (prevCRN !== course.CRN) {
       fieldDesc += `Instructor: ${
         courses[courses.length - 1].Instructor
-      } (${await GetRMPData(courses[courses.length - 1].Instructor)})`;
+      } (${teachers[courses[courses.length - 1].Instructor].rating})`;
       reply.addField(prevCRN, fieldDesc, true);
       prevCRN = course.CRN;
       fieldDesc = "";
@@ -109,7 +115,7 @@ const readCRNs = async (courseCode) => {
   }
   fieldDesc += `Instructor: ${
     courses[courses.length - 1].Instructor
-  } (${await GetRMPData(courses[courses.length - 1].Instructor)})`;
+  } (${teachers[courses[courses.length - 1].Instructor].rating})`;
   reply.addField(courses[courses.length - 1].CRN, fieldDesc, true);
 
   return { embeds: [reply] };
@@ -136,6 +142,6 @@ const GetRMPData = async (teacherName) => {
             .includes(teacherName.toLowerCase().split(", ").slice(-1)[0])
       )
   );
-  if(!teachers[0] || teachers.length > 1) return "N/A";
+  if (!teachers[0] || teachers.length > 1) return "N/A";
   return teachers[0].rating;
 };
