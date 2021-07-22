@@ -40,7 +40,7 @@ const GetRMPData = async (teacherName) => {
             "There were no results for your search, please check your spelling!"
           ),
       ],
-      ephemeral: true,
+      ephemeral: false,
     };
   }
   if (teachers.length > 1) {
@@ -54,7 +54,7 @@ const GetRMPData = async (teacherName) => {
               teachers.map((teacher) => `\`${teacher.name}\``).join(", ")
           ),
       ],
-      ephemeral: true,
+      ephemeral: false,
     };
   }
   const rmpLink = new MessageButton()
@@ -76,6 +76,6 @@ const GetRMPData = async (teacherName) => {
         .setColor(color),
     ],
     components: [[rmpLink]],
-    ephemeral: true,
+    ephemeral: false,
   };
 };
