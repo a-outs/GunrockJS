@@ -89,7 +89,7 @@ const getHelpInfo = async (args, client, guildId) => {
       embeds: [helpEmbed],
       split: true,
       components: [[inviteLink, githubLink]],
-      ephemeral: true,
+      ephemeral: false,
     };
   }
 
@@ -134,5 +134,5 @@ const getHelpInfo = async (args, client, guildId) => {
 
   replyEmbed.setDescription(data.join("\n"));
 
-  return { embeds: [replyEmbed], split: true, ephemeral: true };
+  return { embeds: [replyEmbed], split: true, ephemeral: false };
 };

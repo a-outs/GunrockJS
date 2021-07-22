@@ -8,6 +8,8 @@ A place to put helpful docs.
 
 It seems like only messages responding to interactions can be ephemeral, but you can still attach the ephemeral property and not break anything even if not responding to an interaction.
 
+[Permissions](https://discord.com/developers/docs/topics/permissions)
+
 ## Intents
 
 for discord.js v13 (and by extension, Discord API v8), intents are required on initialization.

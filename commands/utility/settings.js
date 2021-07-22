@@ -8,7 +8,7 @@ module.exports = {
   hasSlash: false,
   hasButton: false,
   helpEntry: false,
-  permissions: ["MANAGE_GUILD"],
+  permissions: ["MANAGE_ROLES"],
   async execute(message, args) {
     if (!args.length) {
       return await message.reply({

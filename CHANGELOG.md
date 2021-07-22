@@ -4,7 +4,9 @@
 
 ### Changed
 
-- Backend handling of CRN command to improve performance
+- Backend handling of CRN command to improve performance.
+- Permission for settings command from `MANAGE_GUILD` to `MANAGE_ROLES`.
+- Default ephemerality of rmp and help commands to false.
 
 ## [1.1.0] - 2021-07-21
 
