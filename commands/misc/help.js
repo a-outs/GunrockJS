@@ -1,5 +1,4 @@
 const { MessageButton, MessageEmbed } = require("discord.js");
-const fs = require("fs").promises;
 
 module.exports = {
   name: "help",
@@ -27,10 +26,7 @@ module.exports = {
 };
 
 const getHelpInfo = async (args, client, guildId) => {
-  const settings = JSON.parse(
-    await fs.readFile(__dirname + "/../../guildConfigs.json")
-  );
-  const guilds = settings.guilds;
+  const guilds = client.settings.guilds;
 
   // guild is the object of settings for the guild that the settings command was sent from
   let guild = guilds.find((guild) => guild.id == guildId);
@@ -62,7 +58,7 @@ const getHelpInfo = async (args, client, guildId) => {
         .join("\n")
     );
     data.push(
-      `\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
+      `\nYou can send \`${guild.prefix || prefix}help [command name]\` to get info on a specific command!`
     );
 
     const githubLink = new MessageButton()

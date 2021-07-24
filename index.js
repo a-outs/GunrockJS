@@ -29,21 +29,22 @@ for (const folder of commandFolders) {
 // collection for cooldowns
 client.cooldowns = new Collection();
 
-client.once("ready", () => {
+client.once("ready", async () => {
   console.log(`GunrockJS is Ready! - ${nodePackage.version}`);
   // Set the bot's activity
   client.user.setActivity("/gunrock", { type: "PLAYING" });
+
+  // loads settings
+  client.settings = JSON.parse(
+    await fsp.readFile(__dirname + "/guildConfigs.json")
+  );
 });
 
 // listener for regular messages
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
-  // loads settings
-  const settings = JSON.parse(
-    await fsp.readFile(__dirname + "/guildConfigs.json")
-  );
-  const guilds = settings.guilds;
+  const guilds = client.settings.guilds;
 
   // guild is the object of settings for the guild that the settings command was sent from
   let guild = guilds.find((guild) => guild.id == message.guild.id);
@@ -202,9 +203,7 @@ client.on("interactionCreate", async (interaction) => {
  * Checks if command is enabled in guild settings.
  */
 const checkIfEnabled = async (command, messageOrInteraction) => {
-  const guilds = JSON.parse(
-    await fsp.readFile(__dirname + "/guildConfigs.json")
-  ).guilds;
+  const guilds = messageOrInteraction.client.settings.guilds;
   const guild = guilds.find(
     (guild) => guild.id == messageOrInteraction.guild.id
   );

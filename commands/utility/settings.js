@@ -25,9 +25,7 @@ module.exports = {
 
     const validSettings = ["enabled"];
 
-    const settings = JSON.parse(
-      await fs.readFile(__dirname + "/../../guildConfigs.json")
-    );
+    const settings = message.client.settings;
     const guilds = settings.guilds;
 
     // guild is the object of settings for the guild that the settings command was sent from
