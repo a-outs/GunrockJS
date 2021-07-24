@@ -5,6 +5,7 @@ module.exports = {
   hasSlash: true,
   hasButton: false,
   helpEntry: true,
+  validSettings: ["enabled"],
   execute(message, args) {
     if (args.length < 1) {
       return message.reply("Error! Please provide a user to call bad!");

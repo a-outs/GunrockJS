@@ -23,8 +23,6 @@ module.exports = {
       });
     }
 
-    const validSettings = ["enabled"];
-
     const settings = message.client.settings;
     const guilds = settings.guilds;
 
@@ -42,17 +40,26 @@ module.exports = {
       );
       response.addField(
         "Prefix:",
-        `\`${guild.prefix ? guild.prefix : "%test"}\``
+        `\`${guild.prefix ? guild.prefix : "!gunrock "}\``
+      );
+      response.addField(
+        "Ephemeral:",
+        `\`${guild.ephemeral ? guild.ephemeral : false}\``
       );
       message.client.commands.forEach((command) => {
         let commandString = "";
         const commandSetting = guild.commandSettings.find(
           (commandSetting) => commandSetting.name == command.name
         );
-        if (!commandSetting) {
-          commandString += "`enabled`: `true`";
-        } else {
-          commandString += "`enabled`: `" + commandSetting.enabled + "`";
+        if (!command.validSettings) commandString += "No settings available.";
+        else {
+          command.validSettings.forEach((setting) => {
+            let settingValue;
+            if (!commandSetting || !commandSetting[setting])
+              settingValue = "unset";
+            else settingValue = commandSetting[setting];
+            commandString += `\`${setting}\` : \`${settingValue}\`\n`;
+          });
         }
         response.addField(command.name + ":", commandString);
       });
@@ -87,6 +94,21 @@ module.exports = {
         });
       }
 
+      if (args[1] === "ephemeral") {
+        const input = args[2] === "true";
+        guild.ephemeral = input;
+        writeSettings(settings);
+        return await message.reply({
+          embeds: [
+            new MessageEmbed()
+              .setTitle("Success")
+              .setDescription(
+                "Guild ephemerality is set to " + guild.ephemeral
+              ),
+          ],
+        });
+      }
+
       if (!message.client.commands.has(args[1])) {
         return await message.reply({
           embeds: [
@@ -98,16 +120,19 @@ module.exports = {
         });
       }
 
-      if (!validSettings.includes(args[2])) {
+      const command = message.client.commands.get(args[1]);
+
+      if (!command.validSettings || !command.validSettings.includes(args[2])) {
+        let validSettingsText;
+        if (!command.validSettings) validSettingsText = "none";
+        else validSettingsText = command.validSettings.join(", ");
         return await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle("Error: Setting not found!")
               .setColor("#ff0000")
               .setDescription(
-                "The valid settings to change for this command are: `" +
-                  validSettings.join(", ") +
-                  "`"
+                `The valid settings to change for this command are: \`${validSettingsText}\``
               ),
           ],
         });
@@ -121,20 +146,8 @@ module.exports = {
           guild.commandSettings[guild.commandSettings.length - 1];
       }
       let value = args[3];
-      if (args[2] === "enabled") {
-        if (args[1] === "settings" || args[1] === "help") {
-          // prevent users from disabling the help and settings commands
-          return await message.reply({
-            embeds: [
-              new MessageEmbed()
-                .setTitle("Error: Command not editable!")
-                .setColor("#ff0000")
-                .setDescription("That command's settings cannot be edited!"),
-            ],
-          });
-        }
+      if (args[2] === "enabled" || args[2] === "ephemeral")
         value = value === "true";
-      }
       commandSetting[args[2]] = value;
       message.reply({
         embeds: [

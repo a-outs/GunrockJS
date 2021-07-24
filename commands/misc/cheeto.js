@@ -8,7 +8,8 @@ module.exports = {
   hasSlash: true,
   hasButton: true,
   helpEntry: true,
-  execute(message, args) {
+  validSettings: ["enabled"],
+  execute(message) {
     message.channel.send(getCheetoPic());
   },
   async slash_execute(interaction) {

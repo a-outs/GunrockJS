@@ -8,6 +8,7 @@ module.exports = {
   hasSlash: true,
   hasButton: false,
   helpEntry: true,
+  validSettings: ["ephemeral"],
   async execute(message, args) {
     message.reply(await getHelpInfo(args, message.client, message.guild.id));
   },

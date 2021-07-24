@@ -8,6 +8,7 @@ module.exports = {
   hasButton: false,
   helpEntry: true,
   cooldown: 60,
+  validSettings: ["enabled"],
   execute(message, args) {
     if (args.length < 1) {
       return message.reply("Error! Please provide a user to rate!");

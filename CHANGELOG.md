@@ -7,6 +7,7 @@
 - Backend handling of CRN command and guild settings to reduce file reads and improve performance.
 - Permission for settings command from `MANAGE_GUILD` to `MANAGE_ROLES`.
 - Default ephemerality of rmp and help commands to false.
+- Settings handling for individual commands. Ephemerality can now be set per command and guild-wide.
 
 ## [1.1.0] - 2021-07-21
 

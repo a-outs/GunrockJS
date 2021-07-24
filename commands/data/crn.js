@@ -10,15 +10,18 @@ module.exports = {
   hasSlash: true,
   hasButton: false,
   helpEntry: true,
-  async execute(message, args) {
+  validSettings: ["enabled", "ephemeral"],
+  async execute(message, args, ephemerality) {
     const courseCode = parseCourseCode(args);
     const messageReply = await readCRNs(courseCode);
+    messageReply.ephemeral = ephemerality
     await message.reply(messageReply);
   },
-  async slash_execute(interaction) {
+  async slash_execute(interaction, ephemerality) {
     const { value: rawCourseCode } = interaction.options.get("code");
     const courseCode = parseCourseCode(rawCourseCode.split(" "));
     const messageReply = await readCRNs(courseCode);
+    messageReply.ephemeral = ephemerality
     await interaction.reply(messageReply);
   },
 };

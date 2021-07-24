@@ -10,16 +10,17 @@ module.exports = {
   hasSlash: true,
   hasButton: false,
   helpEntry: false,
-  async execute(message, args) {
-    message.reply(await GetRMPData(args[0]));
+  validSettings: ["enabled", "ephemeral"],
+  async execute(message, args, ephemerality) {
+    message.reply(await GetRMPData(args[0], ephemerality));
   },
-  async slash_execute(interaction) {
+  async slash_execute(interaction, ephemerality) {
     const { value: teacherName } = interaction.options.get("name");
-    interaction.reply(await GetRMPData(teacherName));
+    interaction.reply(await GetRMPData(teacherName, ephemerality));
   },
 };
 
-const GetRMPData = async (teacherName) => {
+const GetRMPData = async (teacherName, ephemeral) => {
   // getting the csv file and parsing it
   const fileContent = await fs.readFile(__dirname + "/../../data/rmpData.csv");
   const records = parse(fileContent, {
@@ -40,7 +41,7 @@ const GetRMPData = async (teacherName) => {
             "There were no results for your search, please check your spelling!"
           ),
       ],
-      ephemeral: false,
+      ephemeral: true,
     };
   }
   if (teachers.length > 1) {
@@ -54,7 +55,7 @@ const GetRMPData = async (teacherName) => {
               teachers.map((teacher) => `\`${teacher.name}\``).join(", ")
           ),
       ],
-      ephemeral: false,
+      ephemeral: true,
     };
   }
   const rmpLink = new MessageButton()
@@ -76,6 +77,6 @@ const GetRMPData = async (teacherName) => {
         .setColor(color),
     ],
     components: [[rmpLink]],
-    ephemeral: false,
+    ephemeral: ephemeral,
   };
 };

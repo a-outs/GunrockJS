@@ -69,7 +69,7 @@ client.on("messageCreate", async (message) => {
     !(
       command &&
       command.hasCommand &&
-      !(await checkIfEnabled(command, message))
+      !(checkIfEnabled(command, message))
     )
   ) {
     return message
@@ -112,7 +112,7 @@ client.on("messageCreate", async (message) => {
   if (handleCooldown(command, message)) return;
 
   try {
-    command.execute(message, args);
+    command.execute(message, args, checkEphemerality(command, message));
   } catch (error) {
     console.error(error);
     message
@@ -149,10 +149,10 @@ client.on("interactionCreate", async (interaction) => {
     command.hasSlash &&
     (!command.permissions ||
       interaction.member.permissions.has(command.permissions)) &&
-    !(await checkIfEnabled(command, interaction))
+    !(checkIfEnabled(command, interaction))
   ) {
     try {
-      command.slash_execute(interaction);
+      command.slash_execute(interaction, checkEphemerality(command, interaction));
     } catch (error) {
       console.error(error);
       interaction.reply({
@@ -202,17 +202,38 @@ client.on("interactionCreate", async (interaction) => {
 /**
  * Checks if command is enabled in guild settings.
  */
-const checkIfEnabled = async (command, messageOrInteraction) => {
+const checkIfEnabled = (command, messageOrInteraction) => {
   const guilds = messageOrInteraction.client.settings.guilds;
   const guild = guilds.find(
     (guild) => guild.id == messageOrInteraction.guild.id
   );
-  if (!guild) return 0;
+  if (!guild) return false;
   const commandSetting = guild.commandSettings.find(
     (commandSetting) => commandSetting.name == command.name
   );
-  if (!commandSetting) return 0;
-  return !commandSetting.enabled;
+  if (!commandSetting) return false;
+  if (typeof commandSetting.enabled === 'boolean') return commandSetting.enabled;
+  return false;
+};
+
+/**
+ * Checks if command is enabled in guild settings.
+ */
+const checkEphemerality = (command, messageOrInteraction) => {
+  const guilds = messageOrInteraction.client.settings.guilds;
+  const guild = guilds.find(
+    (guild) => guild.id == messageOrInteraction.guild.id
+  );
+  if (!guild) return false;
+  
+  const commandSetting = guild.commandSettings.find(
+    (commandSetting) => commandSetting.name == command.name
+  );
+  if (!commandSetting || typeof commandSetting.ephemeral !== "boolean") {
+    if (typeof guild.ephemeral === "boolean") return guild.ephemeral;
+    return false;
+  }
+  return commandSetting.ephemeral;
 };
 
 /**
