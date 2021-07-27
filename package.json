@@ -1,6 +1,6 @@
 {
   "name": "gunrockjs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "main": "index.js",
   "watch": {
@@ -11,8 +11,8 @@
     "watch": "npm-watch main",
     "fmt": "npx prettier --write ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Tim Stewart",
+  "license": "GPL",
   "dependencies": {
     "csv-parse": "^4.16.0",
     "discord.js": "github:discordjs/discord.js#master",
