@@ -1,4 +1,4 @@
-const { MessageButton, MessageEmbed } = require("discord.js");
+const { MessageButton, MessageEmbed, MessageActionRow } = require("discord.js");
 
 module.exports = {
   name: "help",
@@ -59,7 +59,9 @@ const getHelpInfo = async (args, client, guildId) => {
         .join("\n")
     );
     data.push(
-      `\nYou can send \`${guild.prefix || prefix}help [command name]\` to get info on a specific command!`
+      `\nYou can send \`${
+        guild.prefix || prefix
+      }help [command name]\` to get info on a specific command!`
     );
 
     const githubLink = new MessageButton()
@@ -74,6 +76,8 @@ const getHelpInfo = async (args, client, guildId) => {
       )
       .setStyle("LINK");
 
+    const row = new MessageActionRow().addComponents(githubLink, inviteLink);
+
     const helpEmbed = new MessageEmbed()
       .setColor("#0099ff")
       .setTitle("GunrockJS Help")
@@ -85,7 +89,7 @@ const getHelpInfo = async (args, client, guildId) => {
     return {
       embeds: [helpEmbed],
       split: true,
-      components: [[inviteLink, githubLink]],
+      components: [row],
       ephemeral: false,
     };
   }

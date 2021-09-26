@@ -14,8 +14,11 @@
   "author": "Tim Stewart",
   "license": "GPL",
   "dependencies": {
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
     "csv-parse": "^4.16.0",
-    "discord.js": "github:discordjs/discord.js#master",
+    "discord-api-types": "^0.23.1",
+    "discord.js": "^13.1.0",
     "eslint": "^7.29.0",
     "npm-watch": "^0.10.0"
   }
