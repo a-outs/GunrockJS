@@ -1,6 +1,6 @@
 const fs = require("fs").promises;
 const parse = require("csv-parse/lib/sync");
-const { MessageEmbed, MessageButton } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 
 module.exports = {
   name: "rmp",
@@ -62,6 +62,7 @@ const GetRMPData = async (teacherName, ephemeral) => {
     .setLabel("Teacher's RMP")
     .setURL(teachers[0].link)
     .setStyle("LINK");
+  const row = new MessageActionRow().addComponents(rmpLink);
   const color = `0x${(
     "0" + Math.floor((5 - parseFloat(teachers[0].rating) - 1) * 63).toString(16)
   ).slice(-2)}${(
@@ -76,7 +77,7 @@ const GetRMPData = async (teacherName, ephemeral) => {
         )
         .setColor(color),
     ],
-    components: [[rmpLink]],
+    components: [row],
     ephemeral: ephemeral,
   };
 };

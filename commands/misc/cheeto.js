@@ -1,5 +1,5 @@
 const { cheeto_pics } = require("../../cheeto.json");
-const { MessageButton } = require("discord.js");
+const { MessageButton, MessageActionRow } = require("discord.js");
 
 module.exports = {
   name: "cheeto",
@@ -21,12 +21,14 @@ module.exports = {
 };
 
 const getCheetoPic = () => {
+  
   const button = new MessageButton()
     .setCustomId("cheeto")
     .setLabel("Get new pic!")
     .setStyle("SECONDARY");
+  const row = new MessageActionRow().addComponents(button);
   return {
     content: cheeto_pics[Math.floor(Math.random() * cheeto_pics.length)][0],
-    components: [[button]],
+    components: [row],
   };
 };
