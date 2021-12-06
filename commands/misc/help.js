@@ -60,7 +60,7 @@ const getHelpInfo = async (args, client, guildId) => {
     );
     data.push(
       `\nYou can send \`${
-        guild.prefix || prefix
+        guild ? guild.prefix || prefix : prefix
       }help [command name]\` to get info on a specific command!`
     );
 

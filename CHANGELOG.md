@@ -6,6 +6,10 @@
 
  - Updated to Discord.js 13.1.0.
 
+### Fixed
+
+ - Bug regarding help command in guilds with no settings.
+
 ## [1.2.0] - 2021-07-26
 
 ### Changed
