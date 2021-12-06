@@ -2,14 +2,14 @@ FROM node:17
 
 LABEL maintainer="Tim Stewart"
 
-COPY ./ /app
-
 WORKDIR /app
 
-RUN ls
+COPY package*.json ./
 
 RUN npm install
 
 RUN npm install pm2@latest -g
+
+COPY ./ ./
 
 CMD [ "pm2-runtime", "npm", "--", "run", "main" ]
