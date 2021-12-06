@@ -40,6 +40,12 @@ Watch: `npm run watch`
 
 Run without watch: `node .`
 
+## Using Docker
+
+For the bot to work via docker, `token.json` and `guildConfigs.json` must be mounted to `/app/`.
+
+For example: `sudo docker run -d -v /home/user/token.json:/app/token.json -v /home/user/guildConfigs.json:/app/guildConfigs.json timstewartj/gunrockjs`
+
 ## Maintainers
 
 - [@timstewartj](https://github.com/TimStewartJ) 
