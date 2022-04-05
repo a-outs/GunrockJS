@@ -5,6 +5,7 @@
 - Dockerfile and Docker documentation.
 ### Changed
 - Updated to Discord.js 13.1.0.
+- Updated other packages.
 ### Fixed
 - Bug regarding help command in guilds with no settings.
 

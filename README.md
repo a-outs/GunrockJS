@@ -40,6 +40,10 @@ Watch: `npm run watch`
 
 Run without watch: `node .`
 
+At a bare minimum, the bot needs:
+ - A Discord bot token as a key for the name "token" in `token.json`
+ - A `guildConfigs.json` file with an empty "guilds" array
+
 ## Using Docker
 
 For the bot to work via docker, `token.json` and `guildConfigs.json` must be mounted to `/app/`.
