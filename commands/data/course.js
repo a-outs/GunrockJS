@@ -1,6 +1,12 @@
+const axios = require('axios');
+const { parse } = require('node-html-parser');
 const fs = require("fs").promises;
-const parse = require("csv-parse/lib/sync");
+const csvParse = require("csv-parse/lib/sync");
 const { MessageEmbed } = require("discord.js");
+
+const GECategories = [
+  "AH", "SE", "SS", "ACGH", "DD", "OL", "QL", "SL", "VL", "WC",
+]
 
 module.exports = {
   name: "course",
@@ -17,11 +23,12 @@ module.exports = {
     await message.reply(messageReply);
   },
   async slash_execute(interaction, ephemerality) {
+    await interaction.deferReply({ ephemeral: ephemerality})
     const { value: rawCourseCode } = interaction.options.get("code");
     const courseCode = parseCourseCode(rawCourseCode.split(" "));
     const messageReply = await readCourses(courseCode);
     messageReply.ephemeral = ephemerality;
-    await interaction.reply(messageReply);
+    await interaction.editReply(messageReply);
   },
 };
 
@@ -41,20 +48,63 @@ const parseCourseCode = (args) => {
 };
 
 const readCourses = async (courseCode) => {
-  // slight parsing for the inputted `courseCode`
   courseCode = courseCode.toUpperCase();
-  // getting the csv file and parsing it
-  const fileContent = await fs.readFile(
-    __dirname + "/../../data/20212022GenCat.csv"
-  );
-  const records = parse(fileContent, {
-    columns: true,
-    escape: "\\",
-    skipLinesWithError: true,
+
+  let course;
+
+  const splitCourseCode = courseCode.split(" ");
+  const requestedSubject = splitCourseCode[0];
+  const requestedNumber = splitCourseCode[splitCourseCode.length - 1]
+
+  await axios.get(`https://ucdavis.pubs.curricunet.com/Catalog/${requestedSubject}-courses-sc`).then(res => {
+    const root = parse(res.data);
+
+    const classes = root.querySelectorAll(".course-summary-wrapper");
+    classes.forEach(e => {
+      const courseNumber = e.querySelector('.course-number').text;
+      if(requestedNumber == courseNumber)
+      {
+        const courseSubject = e.querySelector('.course-subject').text;
+        const courseTitle = e.querySelector('.course-title').text;
+        const courseCredits = e.querySelector('.course-credits').text;
+        const courseDescription = e.querySelector('.course-summary-paragraph').text;
+        const courseGECredits = e.querySelectorAll('.gen-ed-element');
+        const creditsText = courseGECredits.map(x => x.text);
+
+        course = {
+          Code: `${courseSubject} ${courseNumber}`,
+          Title: courseTitle,
+          Credits: courseCredits,
+        }
+
+        GECategories.forEach(f => {
+          course[f] = creditsText.find(el => el == f);
+        });
+
+        course.Desc = courseDescription;
+      }
+    });
+  }).catch(err => {
+    console.log(err);
   });
 
-  // `course` is object representing the course
-  const course = records.find((course) => course.Code === courseCode);
+  if (!course)
+  {
+    // slight parsing for the inputted `courseCode`
+    courseCode = courseCode.toUpperCase();
+    // getting the csv file and parsing it
+    const fileContent = await fs.readFile(
+      __dirname + "/../../data/20212022GenCat.csv"
+    );
+    const records = csvParse(fileContent, {
+      columns: true,
+      escape: "\\",
+      skipLinesWithError: true,
+    });
+
+    // `course` is object representing the course
+    course = records.find((course) => course.Code === courseCode);
+  }
 
   // if course object isn't found
   if (!course)

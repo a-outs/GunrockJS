@@ -6,6 +6,7 @@
 ### Changed
 - Updated to Discord.js 13.1.0.
 - Updated other packages.
+- Course command now tries to grab straight from the course catalog if possible.
 ### Fixed
 - Bug regarding help command in guilds with no settings.
 
